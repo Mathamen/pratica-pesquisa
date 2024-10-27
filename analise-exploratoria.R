@@ -6,7 +6,7 @@ library(dplyr)
 data <- read.csv("dados_para_pratica.csv")
 
 
-# Calcular a média de um atributo específico (por exemplo, "atributo1")
+#Cálculo de todas as médias (global)
 media_anos <- mean(data$date, na.rm = TRUE)
 media_length <- mean(data$length, na.rm = TRUE)
 media_wordfish <- mean(data$wordfish, na.rm = TRUE)
@@ -19,4 +19,5 @@ media_negemo <- mean(data$Negemo, na.rm = TRUE)
 media_past_focus <- mean(data$Past.Focus, na.rm = TRUE)
 media_present_focus <- mean(data$Present.Focus, na.rm = TRUE)
 media_future_focus <- mean(data$Future.Focus, na.rm = TRUE)
-#desvio_padrao_atributo <- sd(data$atributo1, na.rm = TRUE)
+
+#Cálculo dos Desvios padrões (global)
