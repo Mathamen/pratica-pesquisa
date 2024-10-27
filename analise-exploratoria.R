@@ -1,6 +1,6 @@
 # Carregar o pacote necessário
-#install.packages("dplyr") # Descomente se você não tiver o pacote 'dplyr' instalado
-# install.packages("ggplot2") # Descomente se você não tiver o pacote 'ggplot2' instalado
+install.packages("dplyr") # Descomente se você não tiver o pacote 'dplyr' instalado
+install.packages("ggplot2") # Descomente se você não tiver o pacote 'ggplot2' instalado
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -251,3 +251,29 @@ criar_graficos_partido(dados_prn, "PRN")
 criar_graficos_partido(dados_psl, "PSL")
 criar_graficos_partido(dados_psdb, "PSDB")
 criar_graficos_partido(dados_pt, "PT")
+
+
+
+#----------------------------------------------
+# Solução da questão 2:
+# Selecionar apenas as colunas numéricas, excluindo as colunas dos partidos (substitua os nomes dos partidos conforme necessário)
+atributos_numericos <- data[, sapply(data, is.numeric)]
+atributos_numericos <- atributos_numericos[, !(names(atributos_numericos) %in% c("PMDB", "PRN", "PSL", "PSDB", "PT"))]
+
+# Discretizar cada coluna numérica em "Baixo", "Médio" e "Alto"
+atributos_discretizados <- data.frame(lapply(atributos_numericos, function(coluna) {
+  cut(coluna,
+      breaks = quantile(coluna, probs = c(0, 1/3, 2/3, 1), na.rm = TRUE),
+      labels = c("Baixo", "Médio", "Alto"),
+      include.lowest = TRUE)
+}))
+
+# Renomear as colunas discretizadas com o sufixo "_discretizado"
+names(atributos_discretizados) <- paste0(names(atributos_discretizados), "_discretizado")
+
+# Combinar o dataset original com as colunas discretizadas
+data_novo <- cbind(data, atributos_discretizados)
+
+# Exibir as primeiras linhas do novo dataset
+print(head(data_novo)
+
