@@ -1,6 +1,6 @@
 # Carregar o pacote necessário
-install.packages("dplyr") # Descomente se você não tiver o pacote 'dplyr' instalado
-install.packages("ggplot2") # Descomente se você não tiver o pacote 'ggplot2' instalado
+install.packages("dplyr") # Descomente se você não tiver o pacote 'dplyr'
+install.packages("ggplot2") # Descomente se você não tiver o pacote 'ggplot2'
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -13,6 +13,7 @@ data <- read.csv("dados_para_pratica.csv")
 media_anos <- mean(data$date, na.rm = TRUE)
 media_length <- mean(data$length, na.rm = TRUE)
 media_wordfish <- mean(data$wordfish, na.rm = TRUE)
+#LIWC
 media_analytic <- mean(data$Analytic, na.rm = TRUE)
 media_tone <- mean(data$Tone, na.rm = TRUE)
 media_clout <- mean(data$Clout, na.rm = TRUE)
@@ -27,6 +28,7 @@ media_future_focus <- mean(data$Future.Focus, na.rm = TRUE)
 desvio_padrao_anos <- sd(data$date, na.rm = TRUE)
 desvio_padrao_length <- sd(data$length, na.rm = TRUE)
 desvio_padrao_wordfish <- sd(data$wordfish, na.rm = TRUE)
+#LIWC
 desvio_padrao_analytic <- sd(data$Analytic, na.rm = TRUE)
 desvio_padrao_tone <- sd(data$Tone, na.rm = TRUE)
 desvio_padrao_clout <- sd(data$Clout, na.rm = TRUE)
@@ -213,39 +215,145 @@ list(
   PT = list(Media = media_pt, Desvio_Padrao = desvio_padrao_pt)
 )
 
+#---------------------------------------------------------------
+# Gráficos de densidade para cada atributo
+# Para obter os dados, rode o código que começa na linha 311 (data_novo)
+ggplot(data_novo, aes(x = date, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Date", y = "Densidade") +
+  theme_minimal()
+
+ggplot(data_novo, aes(x = length, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Length", y = "Densidade") +
+  theme_minimal()
+
+ggplot(data_novo, aes(x = Analytic, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Analytic", y = "Densidade") +
+  theme_minimal()
+
+ggplot(data_novo, aes(x = Tone, fill  = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Tone", y = "Densidade") +
+  theme_minimal()
+
+ggplot(data_novo, aes(x = Clout, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Clout", y = "Densidade") +
+  theme_minimal()
+
+ggplot(data_novo, aes(x = Authentic, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Authentic", y = "Densidade") +
+  theme_minimal()
+
+ggplot(data_novo, aes(x = Posemo, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Posemo", y = "Densidade") +
+  theme_minimal()
+
+ggplot(data_novo, aes(x = Negemo, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Negemo", y = "Densidade") +
+  theme_minimal()
+
+
+ggplot(data_novo, aes(x = Past.Focus, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Past Focus", y = "Densidade") +
+  theme_minimal()
+
+ggplot(data_novo, aes(x = Present.Focus, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Present Focus", y = "Densidade") +
+  theme_minimal()
+
+ggplot(data_novo, aes(x = Future.Focus, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Future Focus", y = "Densidade") +
+  theme_minimal()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #-------------------------------------------------------------
 # Criação dos gráficos box-plot e dispersão
 
 criar_graficos_partido <- function(dados_partido, partido_nome) {
   
-  # Aqui estou transformando e escolhendo os dados. Não estou fazendo com date, wordfish e length.
+  # Aqui estou transformando e escolhendo os dados. 
+  #Não estou fazendo com date, wordfish e length.
   # Não escolhi os 3 pois são dados que não considerei interessantes, além de estragar o plot.
   dados_long <- dados_partido %>%
     pivot_longer(cols = c(Analytic, Tone, Clout, Authentic, Posemo, Negemo, Past.Focus, Present.Focus, Future.Focus),
                  names_to = "atributo",
                  values_to = "valor")
   
-  # Criação do Box Plot
+  # Criação do Box Plot - TODO : Separar em 2 gráficos?
   box_plot <- ggplot(dados_long, aes(x = atributo, y = valor)) +
     geom_boxplot(fill = "lightblue", outlier.colour = "red", outlier.size = 2) +
     theme_minimal() +
     labs(title = paste("Boxplot de Atributos -", partido_nome), x = "Atributos", y = "Valor") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
-  # Criação do dispersão
+
+  
+  # Criação do dispersão TODO : Levar para o Ogasawara
   dispersao_plot <- ggplot(dados_long, aes(x = atributo, y = valor)) +
     geom_point(alpha = 0.5, color = "blue") +
     theme_minimal() +
     labs(title = paste("Gráfico de Dispersão -", partido_nome), x = "Atributos", y = "Valor") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
+  
+  
   # Feedback Visual dos gráficos
   print(box_plot)
   print(dispersao_plot)
 }
 
-# Gerando gráficos por partido
-# Estas funções DEPENDEM da geração dos dados por partido, criado algumas linhas anteriormente.
+
+criar_scatter <- function() {
+  grf <- plot_scatter(data_novo |> select(x = data_novo.date, value = data_novo.length, variable = partido), 
+                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
+  plot(grf)
+  
+  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
+                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
+  plot(grf)
+  
+  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
+                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
+  plot(grf)
+  
+  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
+                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
+  plot(grf)
+  
+  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
+                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
+  plot(grf)
+  
+  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
+                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
+  plot(grf)
+  
+}
+
+
 criar_graficos_partido(dados_pmdb, "PMDB")
 criar_graficos_partido(dados_prn, "PRN")
 criar_graficos_partido(dados_psl, "PSL")
@@ -254,9 +362,41 @@ criar_graficos_partido(dados_pt, "PT")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+# Selecionar e renomear colunas
+grf <- data %>%
+  select(date = date, length = length, partido)
+
+# Criar o gráfico
+grf_plot <- plot_scatter(grf, label_x = "Date", label_y = "Length", colors = partido[6:10])
+
+# Exibir o gráfico
+plot(grf_plot)
+
+
+
+
+
+
+
+
+
+
+
 #----------------------------------------------
 # Solução da questão 2:
-# Selecionar apenas as colunas numéricas, excluindo as colunas dos partidos (substitua os nomes dos partidos conforme necessário)
+# Selecionar apenas as colunas numéricas, excluindo as colunas dos partidos 
+#(substitua os nomes dos partidos conforme necessário)
 atributos_numericos <- data[, sapply(data, is.numeric)]
 atributos_numericos <- atributos_numericos[, !(names(atributos_numericos) %in% c("PMDB", "PRN", "PSL", "PSDB", "PT"))]
 
@@ -274,6 +414,127 @@ names(atributos_discretizados) <- paste0(names(atributos_discretizados), "_discr
 # Combinar o dataset original com as colunas discretizadas
 data_novo <- cbind(data, atributos_discretizados)
 
-# Exibir as primeiras linhas do novo dataset
-print(head(data_novo)
+
+
+# A b não está codificada pois o dataset já se encontra em mapeamento categórico
+
+# ---------------------------------------------------------------
+# questão 3, k-means
+
+# fazendo a classificação com os nomes dos atributos para o K means
+# Criar uma cópia do dataset original
+data_novo <- data
+
+# Adicionar a nova coluna 'partido' na cópia com base nos valores das colunas de partidos
+data_novo$partido <- apply(data_novo[, c("PMDB", "PRN", "PSL", "PSDB", "PT")], 1, function(x) {
+  if (x["PMDB"] == 1) {
+    return("PMDB")
+  } else if (x["PRN"] == 1) {
+    return("PRN")
+  } else if (x["PSL"] == 1) {
+    return("PSL")
+  } else if (x["PSDB"] == 1) {
+    return("PSDB")
+  } else if (x["PT"] == 1) {
+    return("PT")
+  } else {
+    return(NA)  # Caso nenhuma coluna seja 1, define como NA
+  }
+})
+
+
+
+
+# DAL ToolBox
+# version 1.0.767
+
+source("https://raw.githubusercontent.com/cefet-rj-dal/daltoolbox/main/jupyter.R")
+
+#loading DAL
+load_library("daltoolbox")
+
+# um cluster para cada partido
+model <- cluster_kmeans(k=5)
+model <- fit(model, data[,11:20])
+clu <- cluster(model, data[,11:20])
+table(clu)
+eval <- evaluate(model, clu, data_novo$partido)
+eval
+  
+
+# agora com o min max 
+data_novo_minmax <- transform(fit(minmax(), data_novo), data_novo)
+model <- cluster_kmeans(k=5)
+model <- fit(model, data_novo_minmax[,11:20])
+clu <- cluster(model, data_novo_minmax[,11:20])
+table(clu)
+eval <- evaluate(model, clu, data_novo_minmax$partido)
+eval   
+
+
+#-----------------------------------------------------------------------
+#Questão 4
+
+
+source("https://raw.githubusercontent.com/cefet-rj-dal/daltoolbox/main/jupyter.R")
+
+#loading DAL
+load_library("daltoolbox")
+
+
+data_novo$partido <- factor(data_novo$partido)
+
+# Agora você pode obter os níveis corretamente
+slevels <- levels(data_novo$partido)
+print(slevels)
+
+
+discursos <- cbind(as.matrix(data_novo[,11:20]), Parties=data_novo$partido)
+
+set.seed(1)
+sr <- sample_random()
+sr <- train_test(sr, discursos)
+discursos_train <- sr$train
+discursos_test <- sr$test
+
+
+tbl <- rbind(table(discursos[,"Parties"]), 
+             table(discursos_train[,"Parties"]), 
+             table(discursos_test[,"Parties"]))
+rownames(tbl) <- c("dataset", "training", "test")
+head(tbl)
+
+
+model <- cla_mlp("Parties", slevels, size=5,decay=0.03)
+model <- fit(model, discursos_train)
+train_prediction <- predict(model, discursos_train)
+
+
+discursos_train_predictand <- adjust_class_label(discursos_train[,"Parties"])
+train_eval <- evaluate(model, discursos_train_predictand, train_prediction)
+print(train_eval$metrics)
+
+
+# Test  
+discursos_prediction <- predict(model, discursos_test)
+
+discursos_test_predictand <- adjust_class_label(discursos_test[,"Parties"])
+test_eval <- evaluate(model, discursos_test_predictand, discursos_prediction)
+print(test_eval$metrics)
+
+
+
+
+#-------------------------------------------------------------------------
+#Questão 5
+# Padrões frequentes observados:
+# Na densidade, o PSL possui discursos mais breves
+# Em analytic, o PRN possui pontuações maiores, e PSDB, PSL e PT possui menores
+# Em tone, PSDB possui discursos mais neutros, e PSL os mais positivos
+# Em clout, PSDB possui discursos menos influenciadores
+# Em authentic, os discursos possuem poucos valores no geral, bem baixo. E também
+# Diferenças em outliers.
+# Em posemo, o PSL possui, no geral, discursos levemente mais positivos
+# Em past focus, PRN possui menor foco no passado, e PSL varia mais
+      
 
