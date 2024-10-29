@@ -6,6 +6,17 @@ load_library("gridExtra")
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+source("https://raw.githubusercontent.com/cefet-rj-dal/daltoolbox/main/jupyter.R")
+#loading DAL
+load_library("daltoolbox")
+install.packages("arules")
+library(arules)
+library(dplyr)
+
+
+
+
+
 
 # Carregar o arquivo CSV
 data <- read.csv("dados_para_pratica.csv")
@@ -40,7 +51,6 @@ desvio_padrao_negemo <- sd(data$Negemo, na.rm = TRUE)
 desvio_padrao_past_focus <- sd(data$Past.Focus, na.rm = TRUE)
 desvio_padrao_present_focus <- sd(data$Present.Focus, na.rm = TRUE)
 desvio_padrao_future_focus <- sd(data$Future.Focus, na.rm = TRUE)
-
 
 
 
@@ -219,7 +229,7 @@ list(
 
 #---------------------------------------------------------------
 # Gráficos de densidade para cada atributo
-# Para obter os dados, rode o código que começa na linha 311 (data_novo)
+# Para obter os dados, rode o código que começa na linha 408 (data_novo)
 ggplot(data_novo, aes(x = date, fill = partido)) +
   geom_density(alpha = 0.5) + 
   labs(title = "Gráfico de Densidade por Classe", x = "Date", y = "Densidade") +
@@ -416,15 +426,6 @@ data_novo$partido <- apply(data_novo[, c("PMDB", "PRN", "PSL", "PSDB", "PT")], 1
 
 
 
-
-# DAL ToolBox
-# version 1.0.767
-
-source("https://raw.githubusercontent.com/cefet-rj-dal/daltoolbox/main/jupyter.R")
-
-#loading DAL
-load_library("daltoolbox")
-
 # um cluster para cada partido
 model <- cluster_kmeans(k=5)
 model <- fit(model, data[,11:20])
@@ -446,13 +447,6 @@ eval
 
 #-----------------------------------------------------------------------
 #Questão 4
-
-
-source("https://raw.githubusercontent.com/cefet-rj-dal/daltoolbox/main/jupyter.R")
-
-#loading DAL
-load_library("daltoolbox")
-
 
 data_novo$partido <- factor(data_novo$partido)
 
@@ -510,10 +504,7 @@ print(test_eval$metrics)
 # Em past focus, PRN possui menor foco no passado, e PSL varia mais
 
 
-# Instalar e carregar o pacote 'arules'
-install.packages("arules")
-library(arules)
-library(dplyr)
+# Apriori
 data_arules <- atributos_discretizados %>% select(-number_discretizado)
 data_arules <- cbind(data_arules, data_novo$partido)
 # Converter o dataset em transações
