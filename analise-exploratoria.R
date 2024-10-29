@@ -1,6 +1,8 @@
 # Carregar o pacote necessário
 install.packages("dplyr") # Descomente se você não tiver o pacote 'dplyr'
 install.packages("ggplot2") # Descomente se você não tiver o pacote 'ggplot2'
+install.packages("gridExtra")
+load_library("gridExtra")
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -274,21 +276,6 @@ ggplot(data_novo, aes(x = Future.Focus, fill = partido)) +
   labs(title = "Gráfico de Densidade por Classe", x = "Future Focus", y = "Densidade") +
   theme_minimal()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #-------------------------------------------------------------
 # Criação dos gráficos box-plot e dispersão
 
@@ -309,7 +296,7 @@ criar_graficos_partido <- function(dados_partido, partido_nome) {
     labs(title = paste("Boxplot de Atributos -", partido_nome), x = "Atributos", y = "Valor") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
-
+  
   
   # Criação do dispersão TODO : Levar para o Ogasawara
   dispersao_plot <- ggplot(dados_long, aes(x = atributo, y = valor)) +
@@ -318,40 +305,52 @@ criar_graficos_partido <- function(dados_partido, partido_nome) {
     labs(title = paste("Gráfico de Dispersão -", partido_nome), x = "Atributos", y = "Valor") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
-  
-  
   # Feedback Visual dos gráficos
   print(box_plot)
   print(dispersao_plot)
 }
 
+criar_scatter_date <- function() {
+  p1 <- plot_scatter(data_novo |> select(x = date, value = length, variable = partido), 
+                      label_x = "date", label_y = "length")
+  
+  p2 <- plot_scatter(data_novo |> select(x = date, value = wordfish, variable = partido), 
+                      label_x = "date", label_y = "wordfish")
 
-criar_scatter <- function() {
-  grf <- plot_scatter(data_novo |> select(x = data_novo.date, value = data_novo.length, variable = partido), 
-                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
-  plot(grf)
+  p3 <- plot_scatter(data_novo |> select(x = date, value = Analytic, variable = partido), 
+                      label_x = "date", label_y = "Analytic")
+
+  p4 <- plot_scatter(data_novo |> select(x = date, value = Tone, variable = partido), 
+                      label_x = "date", label_y = "Tone")
+
+  p5 <- plot_scatter(data_novo |> select(x = date, value = Clout, variable = partido), 
+                      label_x = "date", label_y = "Clout")
+
+  p6 <- plot_scatter(data_novo |> select(x = date, value = Authentic, variable = partido), 
+                     label_x = "date", label_y = "Authentic")
   
-  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
-                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
-  plot(grf)
+  p7 <- plot_scatter(data_novo |> select(x = date, value = Posemo, variable = partido), 
+                      label_x = "date", label_y = "Posemo")
   
-  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
-                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
-  plot(grf)
+  p8 <- plot_scatter(data_novo |> select(x = date, value = Negemo, variable = partido), 
+                     label_x = "date", label_y = "Negemo")
   
-  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
-                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
-  plot(grf)
+  p9 <- plot_scatter(data_novo |> select(x = date, value = Compare, variable = partido), 
+                     label_x = "date", label_y = "Compare")
   
-  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
-                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
-  plot(grf)
+  p10 <- plot_scatter(data_novo |> select(x = date, value = Past.Focus, variable = partido), 
+                     label_x = "date", label_y = "Past")
   
-  grf <- plot_scatter(iris |> select(x = Sepal.Length, value = Sepal.Width, variable = Species), 
-                      label_x = "Sepal.Length", label_y = "Sepal.Width", colors=colors[1:3]) + font
-  plot(grf)
+  p11 <- plot_scatter(data_novo |> select(x = date, value = Present.Focus, variable = partido), 
+                     label_x = "date", label_y = "Present")
   
+  p12 <- plot_scatter(data_novo |> select(x = date, value = Future.Focus, variable = partido), 
+                     label_x = "date", label_y = "Future")
+
+  grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, ncol = 4)
 }
+
+criar_scatter_date()
 
 
 criar_graficos_partido(dados_pmdb, "PMDB")
@@ -460,7 +459,7 @@ clu <- cluster(model, data[,11:20])
 table(clu)
 eval <- evaluate(model, clu, data_novo$partido)
 eval
-  
+
 
 # agora com o min max 
 data_novo_minmax <- transform(fit(minmax(), data_novo), data_novo)
@@ -536,5 +535,4 @@ print(test_eval$metrics)
 # Diferenças em outliers.
 # Em posemo, o PSL possui, no geral, discursos levemente mais positivos
 # Em past focus, PRN possui menor foco no passado, e PSL varia mais
-      
 
