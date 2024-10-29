@@ -276,6 +276,11 @@ ggplot(data_novo, aes(x = Future.Focus, fill = partido)) +
   labs(title = "Gráfico de Densidade por Classe", x = "Future Focus", y = "Densidade") +
   theme_minimal()
 
+ggplot(data_novo, aes(x = Compare, fill = partido)) +
+  geom_density(alpha = 0.5) + 
+  labs(title = "Gráfico de Densidade por Classe", x = "Compare", y = "Densidade") +
+  theme_minimal()
+
 #-------------------------------------------------------------
 # Criação dos gráficos box-plot e dispersão
 
@@ -360,38 +365,6 @@ criar_graficos_partido(dados_psdb, "PSDB")
 criar_graficos_partido(dados_pt, "PT")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-# Selecionar e renomear colunas
-grf <- data %>%
-  select(date = date, length = length, partido)
-
-# Criar o gráfico
-grf_plot <- plot_scatter(grf, label_x = "Date", label_y = "Length", colors = partido[6:10])
-
-# Exibir o gráfico
-plot(grf_plot)
-
-
-
-
-
-
-
-
-
-
-
 #----------------------------------------------
 # Solução da questão 2:
 # Selecionar apenas as colunas numéricas, excluindo as colunas dos partidos 
@@ -411,7 +384,7 @@ atributos_discretizados <- data.frame(lapply(atributos_numericos, function(colun
 names(atributos_discretizados) <- paste0(names(atributos_discretizados), "_discretizado")
 
 # Combinar o dataset original com as colunas discretizadas
-data_novo <- cbind(data, atributos_discretizados)
+data_novo_discretizado <- cbind(data, atributos_discretizados)
 
 
 
@@ -526,7 +499,7 @@ print(test_eval$metrics)
 
 #-------------------------------------------------------------------------
 #Questão 5
-# Padrões frequentes observados:
+# Padrões frequentes observados manualmente:
 # Na densidade, o PSL possui discursos mais breves
 # Em analytic, o PRN possui pontuações maiores, e PSDB, PSL e PT possui menores
 # Em tone, PSDB possui discursos mais neutros, e PSL os mais positivos
@@ -536,3 +509,23 @@ print(test_eval$metrics)
 # Em posemo, o PSL possui, no geral, discursos levemente mais positivos
 # Em past focus, PRN possui menor foco no passado, e PSL varia mais
 
+
+# Instalar e carregar o pacote 'arules'
+install.packages("arules")
+library(arules)
+library(dplyr)
+data_arules <- atributos_discretizados %>% select(-number_discretizado)
+data_arules <- cbind(data_arules, data_novo$partido)
+# Converter o dataset em transações
+# Transformar o dataframe em um formato transacional
+data_transacoes <- as(data_arules, "transactions")
+
+# Executar o Apriori
+rules <- apriori(data_transacoes, parameter = list(supp = 0.01, conf = 0.8))
+
+# Filtrar as regras para incluir o partido no RHS
+target_rules <- subset(rules, rhs %pin% "partido")
+
+#100 primeiras pra não fritar CPU
+top_rules <- head(target_rules, 100)
+inspect(top_rules)
