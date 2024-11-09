@@ -31,6 +31,7 @@ gerar_modelo_mlp <- function(data_novo,eval = TRUE){
   #Questão 4
   
   data_novo$partido <- factor(data_novo$partido)
+  data_novo <- data_novo %>% select(-date)
   
   # Agora você pode obter os níveis corretamente
   slevels <- levels(data_novo$partido)

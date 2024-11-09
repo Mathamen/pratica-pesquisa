@@ -102,9 +102,9 @@ model <- gerar_modelo_kmeans(data, data_novo)
 #Questão 4
 
 data_novo$partido <- factor(data_novo$partido)
+cz <-data_novo %>% select(-date)
 
-
-gerar_modelo_mlp(data_novo)
+gerar_modelo_mlp(cz)
 
 
 #-------------------------------------------------------------------------
