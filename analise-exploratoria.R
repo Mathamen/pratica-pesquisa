@@ -120,3 +120,4 @@ gerar_modelo_mlp(cz)
 # Em past focus, PRN possui menor foco no passado, e PSL varia mais
 
 gerar_top_rules(atributos_discretizados,100,data_novo)
+
