@@ -1,5 +1,7 @@
 load_libraries <- function() {
-  packages <- c("dplyr", "ggplot2", "gridExtra", "tidyr", "arules", "daltoolbox")
+  
+
+  packages <- c("dplyr", "ggplot2", "gridExtra", "tidyr", "arules", "daltoolbox","GGally", "caret")
   # Lista de pacotes necessários
   
   # Verificar e instalar pacotes
